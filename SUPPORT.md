@@ -1,6 +1,6 @@
 # Support
 
-**This repo / npm package**: crashes, wrong tool output, setup problems with Claude Desktop, Claude Code or Cursor → open an issue. Include: the tool name, the error text, the `request_id` from the error, your client and Node version (`node -v`). **Never paste your API key.**
+**This repo / npm package**: crashes, wrong tool output, setup problems with Claude Desktop, Claude Code or Cursor → open an issue at <https://gitlab.com/flipzi/flipzi-mcp/-/issues>, or email hello@flipzi.io. Include: the tool name, the error text, the `request_id` from the error, your client and Node version (`node -v`). **Never paste your API key.**
 
 **Keys, billing, plans, allowance**: handled in your account at <https://flipzi.io/account>, not here.
 

@@ -1,12 +1,15 @@
-# Releasing flipzi-mcp (B6)
+# Releasing @flipzi/mcp (B6)
 
 Build sessions never publish. This is the separate release step. Nothing here has been run.
 
-## Decisions Vasil makes first
-1. **npm name** — `flipzi-mcp` was unclaimed on 2026-10-08. Prefer a scope (`@flipzi/mcp`) if the npm org exists; if you rename, change `package.json` name, `server.json` identifier, every `npx -y flipzi-mcp` in README/website/docs.
-2. **Public GitHub repo** (needed by registries and for issues). Default `flipzi/flipzi-mcp`; fix `server.json` `repository.url` and add `repository`/`bugs` to `package.json`. `git remote add origin … && git push -u origin main`. Note `sync-git-repos.sh` pushes any repo that has an upstream.
-3. **Registry namespace** — `mcpName` in `package.json` must equal `server.json` `name`. Current value `io.flipzi/flipzi-mcp` needs DNS verification of flipzi.io (TXT record, `mcp-publisher login dns`); the zero-DNS alternative is `io.github.<github-user-or-org>/flipzi-mcp` with `mcp-publisher login github`.
-4. **Client tag** — keep (activation measurement) or drop (remove the header in `src/client.ts`; the README already documents the opt-out).
+## Decided (2026-10-08)
+- npm package **`@flipzi/mcp`** (scoped: the `flipzi` npm org/user must exist and you must be logged in as a member; first publish needs `--access public`). The command users run is `npx -y @flipzi/mcp`.
+- Repo **https://gitlab.com/flipzi/flipzi-mcp** (`git@gitlab.com:flipzi/flipzi-mcp.git`). Make it **public** before registry/listing steps. No remote has been added to this checkout on purpose: `sync-git-repos.sh` pushes any repo with an upstream. To publish the code: `git remote add origin git@gitlab.com:flipzi/flipzi-mcp.git && git push -u origin main`.
+- Contact **hello@flipzi.io**.
+
+## Still open
+1. **Registry namespace** (official MCP Registry). It is the registry's name for your server, e.g. `io.flipzi/mcp`: the first part proves who owns it. The registry offers two proofs: log in with GitHub (name must start `io.github.<your-github-name>/`) or prove you own a domain by a DNS TXT record (name starts with the reversed domain, `io.flipzi/…`). GitLab login is not one of the options on the page we read, so the DNS route is the fit: add the TXT record `mcp-publisher login dns` asks for on flipzi.io. `package.json` `mcpName` and `server.json` `name` must be identical (currently `io.flipzi/flipzi-mcp`; rename to `io.flipzi/mcp` if you prefer). Unverified: whether the registry accepts `"source": "gitlab"` for the repository field; if it rejects it, `mcp-publisher publish` will say so.
+2. **Client tag** — keep (activation measurement) or drop (remove the header in `src/client.ts`; README already documents the opt-out).
 
 ## Order
 1. **Server side (api-data / backend).** The B6 code is already on disk and committed; it is inert until:
@@ -19,7 +22,7 @@ Build sessions never publish. This is the separate release step. Nothing here ha
    - sandbox key: account/games/search/card/price OK, history + sold comps refused with an upgrade link.
    - Pro or Ultra key: sold comps (and with `SMOKE_MOVERS=1`, movers on Ultra) return data.
    - then in the real clients: `claude mcp add …` (README), Claude Desktop, Cursor — ask one price question each.
-4. **Publish**: `npm publish --access public --provenance` (provenance needs CI; otherwise drop the flag). Then `npx -y flipzi-mcp@latest` from a clean dir.
+4. **Publish**: `npm publish --access public --provenance` (provenance needs CI; otherwise drop the flag). Then `npx -y @flipzi/mcp@latest` from a clean dir.
 4b. **Bundle**: `npm run build:mcpb` → `dist-mcpb/flipzi-mcp.mcpb` (145 KB, single bundled file). Install it in Claude Desktop once by hand before attaching it to the GitHub release; fix the README sentence if the install flow differs. Smithery takes local servers only as a `.mcpb` (`smithery mcp publish ./flipzi-mcp.mcpb -n <org>/flipzi`).
 5. **Registry** (see `website/docs/B6-DIRECTORIES.md`): `mcp-publisher login …`, `mcp-publisher publish`.
 6. **Website**: apply `website/docs/b6-release/` (page + product.json/api-switch claim "no MCP server" + llms.txt). Only after step 4, the page tells people to `npx` a package.
@@ -29,7 +32,7 @@ Build sessions never publish. This is the separate release step. Nothing here ha
 | Need | Action |
 |---|---|
 | Stop recording MCP usage | `DATA_API_CLIENT_TAG_ENABLED=false` in `api-data/.env` (nothing else depends on it) |
-| Warn users off a bad version | `npm deprecate flipzi-mcp@"<=0.1.0" "message"` |
+| Warn users off a bad version | `npm deprecate @flipzi/mcp@"<=0.1.0" "message"` |
 | Pull the package | `npm unpublish` (only within npm's window) or deprecate; delist from the registry (`mcp-publisher` status update) |
 | A leaked/abused key | Revoke at flipzi.io/account/keys; the server has no key store |
 | Stop a runaway agent | Already bounded by `FLIPZI_MCP_MAX_UNITS` per run; account-level quota and 5/min limit still apply |

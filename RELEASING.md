@@ -20,6 +20,7 @@ Build sessions never publish. This is the separate release step. Nothing here ha
    - Pro or Ultra key: sold comps (and with `SMOKE_MOVERS=1`, movers on Ultra) return data.
    - then in the real clients: `claude mcp add …` (README), Claude Desktop, Cursor — ask one price question each.
 4. **Publish**: `npm publish --access public --provenance` (provenance needs CI; otherwise drop the flag). Then `npx -y flipzi-mcp@latest` from a clean dir.
+4b. **Bundle**: `npm run build:mcpb` → `dist-mcpb/flipzi-mcp.mcpb` (145 KB, single bundled file). Install it in Claude Desktop once by hand before attaching it to the GitHub release; fix the README sentence if the install flow differs. Smithery takes local servers only as a `.mcpb` (`smithery mcp publish ./flipzi-mcp.mcpb -n <org>/flipzi`).
 5. **Registry** (see `website/docs/B6-DIRECTORIES.md`): `mcp-publisher login …`, `mcp-publisher publish`.
 6. **Website**: apply `website/docs/b6-release/` (page + product.json/api-switch claim "no MCP server" + llms.txt). Only after step 4, the page tells people to `npx` a package.
 7. **Reports (as root)**: `php generate_api_analytics.php`; check the `mcp` and `acquisition` blocks in `agent-files/analytics-output/api_*latest.json`.

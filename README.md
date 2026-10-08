@@ -20,7 +20,9 @@ claude mcp add --env FLIPZI_API_KEY=fz_live_... --transport stdio flipzi -- npx 
 ```
 Check with `claude mcp list` or `/mcp`. Add `--scope user` to use it in every project.
 
-**Claude Desktop** — Settings → Developer → Edit Config (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS, `%APPDATA%\Claude\claude_desktop_config.json` on Windows), then fully quit and reopen the app:
+**Claude Desktop (one click)** — once the release publishes it, download `flipzi-mcp.mcpb` from the GitHub release and open it; Claude Desktop asks for your key in a masked field.
+
+**Claude Desktop (config file)** — Settings → Developer → Edit Config (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS, `%APPDATA%\Claude\claude_desktop_config.json` on Windows), then fully quit and reopen the app:
 ```json
 {
   "mcpServers": {

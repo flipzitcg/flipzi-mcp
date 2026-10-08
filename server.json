@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.flipzi/flipzi-mcp",
+  "description": "Trading card prices, sold comps, history and movers from the Flipzi Data API. Bring your own key.",
+  "repository": { "url": "https://github.com/REPLACE-AT-RELEASE/flipzi-mcp", "source": "github" },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "flipzi-mcp",
+      "version": "0.1.0",
+      "transport": { "type": "stdio" },
+      "environmentVariables": [
+        { "name": "FLIPZI_API_KEY", "description": "Flipzi Data API key (free plan available at flipzi.io/account)", "isRequired": true, "format": "string", "isSecret": true }
+      ]
+    }
+  ]
+}

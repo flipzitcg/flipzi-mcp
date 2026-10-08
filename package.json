@@ -1,0 +1,49 @@
+{
+  "name": "flipzi-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for the Flipzi Data API: TCG card search, prices, sold comps, history and movers for Claude, Cursor and other AI tools. Bring your own Flipzi API key; free tier available.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "flipzi-mcp": "dist/src/index.js"
+  },
+  "main": "dist/src/index.js",
+  "files": [
+    "dist/src",
+    "README.md",
+    "SUPPORT.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "server.json"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "tcg",
+    "pokemon",
+    "trading-cards",
+    "prices",
+    "flipzi"
+  ],
+  "homepage": "https://flipzi.io/api/mcp/",
+  "scripts": {
+    "gen:plans": "node scripts/gen-plans.mjs",
+    "check:plans": "node scripts/gen-plans.mjs --check",
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test \"dist/test/*.test.js\"",
+    "smoke": "npm run build && node scripts/smoke.mjs",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
+  },
+  "mcpName": "io.flipzi/flipzi-mcp"
+}

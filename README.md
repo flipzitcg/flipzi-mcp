@@ -16,7 +16,7 @@ Requires Node.js 18+. Replace `fz_live_...` with your key.
 
 **Claude Code**
 ```bash
-claude mcp add --env FLIPZI_API_KEY=fz_live_... --transport stdio flipzi -- npx -y @flipzi/mcp
+claude mcp add --env FLIPZI_API_KEY=fz_live_... --transport stdio flipzi -- npx -y @flipzitcg/mcp
 ```
 Check with `claude mcp list` or `/mcp`. Add `--scope user` to use it in every project.
 
@@ -28,7 +28,7 @@ Check with `claude mcp list` or `/mcp`. Add `--scope user` to use it in every pr
   "mcpServers": {
     "flipzi": {
       "command": "npx",
-      "args": ["-y", "@flipzi/mcp"],
+      "args": ["-y", "@flipzitcg/mcp"],
       "env": { "FLIPZI_API_KEY": "fz_live_..." }
     }
   }

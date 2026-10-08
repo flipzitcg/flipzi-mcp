@@ -1,5 +1,5 @@
 {
-  "name": "@flipzi/mcp",
+  "name": "@flipzitcg/mcp",
   "version": "0.1.0",
   "description": "MCP server for the Flipzi Data API: TCG card search, prices, sold comps, history and movers for Claude, Cursor and other AI tools. Bring your own Flipzi API key; free tier available.",
   "type": "module",

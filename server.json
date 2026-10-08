@@ -7,7 +7,7 @@
   "packages": [
     {
       "registryType": "npm",
-      "identifier": "@flipzi/mcp",
+      "identifier": "@flipzitcg/mcp",
       "version": "0.1.0",
       "transport": { "type": "stdio" },
       "environmentVariables": [

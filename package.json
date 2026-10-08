@@ -28,7 +28,7 @@
     "prices",
     "flipzi"
   ],
-  "homepage": "https://flipzi.io/api/mcp/",
+  "homepage": "https://flipzi.io/api/guides/mcp-server/",
   "scripts": {
     "gen:plans": "node scripts/gen-plans.mjs",
     "check:plans": "node scripts/gen-plans.mjs --check",

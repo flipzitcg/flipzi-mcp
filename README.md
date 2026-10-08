@@ -86,4 +86,4 @@ Requirements are read from the API's own contract (`openapi.yaml`, version in `s
 - *"Not on your plan"* — expected; see the table. Run `flipzi_account`.
 - Quote the `request_id` in any error when contacting support. See [SUPPORT.md](SUPPORT.md).
 
-Data is for informational use; see the [API terms](https://flipzi.io/api/terms/). MIT licensed.
+The free plan carries no commercial-use grant. Data is for informational use; see the [API terms](https://flipzi.io/api/terms/). MIT licensed.

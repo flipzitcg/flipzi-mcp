@@ -23,7 +23,7 @@ const tools = [
 const manifest = {
   manifest_version: '0.3', name: 'flipzi', display_name: 'Flipzi Card Prices', version: pkg.version,
   description: 'Trading card prices, sold comps, history and movers from the Flipzi Data API. Bring your own key; free plan available.',
-  author: { name: 'Flipzi', url: 'https://flipzi.io' }, homepage: 'https://flipzi.io/api/mcp/', license: 'MIT',
+  author: { name: 'Flipzi', url: 'https://flipzi.io' }, homepage: 'https://flipzi.io/api/guides/mcp-server/', license: 'MIT',
   server: { type: 'node', entry_point: 'server/index.js', mcp_config: { command: 'node', args: ['${__dirname}/server/index.js'], env: { FLIPZI_API_KEY: '${user_config.api_key}' } } },
   user_config: { api_key: { type: 'string', title: 'Flipzi API key', description: 'Starts with fz_live_. Free key: flipzi.io/account (no card).', sensitive: true, required: true } },
   tools,

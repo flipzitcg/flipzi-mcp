@@ -53,6 +53,7 @@ Then ask: *"What's an Umbreon VMAX worth right now?"* or call `flipzi_account` t
 | `flipzi_get_history` | Basic | 1 | Daily history (30 days on Basic, longer on Pro+) |
 | `flipzi_get_sold_comps` | Pro | 1 | What buyers actually paid on eBay |
 | `flipzi_get_movers` | Ultra | 5 | Biggest gainers/losers for a game |
+| `flipzi_get_box_value` | Pro | 1 | Sealed booster-box price vs the **estimated** value of the cards inside (English Pokémon boxes that pass checks; a range, not a promise) |
 
 Requirements are read from the API's own contract (`openapi.yaml`, version in `src/plans.generated.ts`), not guessed. Plans and prices: <https://flipzi.io/api/pricing/?utm_source=npm&utm_medium=directory&utm_campaign=202610_mcp>. **Every tool is always listed.** When your plan does not include one, the tool says so, names the plan that does, links the upgrade, and the refusal costs 0 units.
 

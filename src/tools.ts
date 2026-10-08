@@ -132,6 +132,7 @@ export function buildTools(client: FlipziClient): ToolDef[] {
               tool('flipzi_search_cards', 'searchCards'), tool('flipzi_get_card', 'getCard'), tool('flipzi_get_price', 'getCardPrice'),
               tool('flipzi_list_games', 'listGames'), tool('flipzi_list_sets', 'listSets'), tool('flipzi_list_set_cards', 'listSetCards'),
               tool('flipzi_get_history', 'getCardHistory'), tool('flipzi_get_sold_comps', 'getCardSold'), tool('flipzi_get_movers', 'getMarketMovers'),
+              tool('flipzi_get_box_value', 'getSealedComparisons'),
             ],
             ...(ranked && rank(u.plan) < rank('ultra') ? { upgrade: tag('https://flipzi.io/account/billing?product=data', 'flipzi_account'), pricing: pricingUrl('flipzi_account') } : {}),
           }),
@@ -176,6 +177,12 @@ export function buildTools(client: FlipziClient): ToolDef[] {
       direction: z.enum(['gainers', 'losers', 'both']).optional(), limit: z.number().int().min(1).max(100).optional().describe('Per direction. Default 10.'),
       set_id: z.string().optional(), currency,
     }, (a) => ({ path: '/v1/market/movers', query: { game: a.game, window: a.window, direction: a.direction, limit: a.limit ?? 10, set_id: a.set_id, currency: a.currency } })),
+    T('flipzi_get_box_value', 'getSealedComparisons', 'Booster box value', 'Sealed booster-box price vs the ESTIMATED value of the cards inside (English Pokemon boxes that pass Flipzi checks). Values are a low/base/high range at CardMarket EUR prices; pull rates are estimates, so this is not a promise about any one box. Omit `set` to list every published box; pass a box `set` slug (from the list) for its top cards and history.', {
+      set: z.string().optional().describe('Box slug from the list, e.g. "paldea-evolved". Omit to list all published boxes.'),
+      history_days: z.number().int().min(1).max(365).optional().describe('With `set`: days of history. Default 90.'),
+    }, (a) => a.set
+      ? { path: `/v1/sealed/comparisons/${encodeURIComponent(a.set)}`, query: { history_days: a.history_days } }
+      : { path: '/v1/sealed/comparisons', query: { game: 'pokemon' } }),
   ];
   return tools;
 }

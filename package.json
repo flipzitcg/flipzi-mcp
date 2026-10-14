@@ -1,6 +1,6 @@
 {
   "name": "@flipzitcg/mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MCP server for the Flipzi Data API: TCG card search, prices, sold comps, history and movers for Claude, Cursor and other AI tools. Bring your own Flipzi API key; free tier available.",
   "type": "module",
   "license": "MIT",
@@ -29,6 +29,11 @@
     "flipzi"
   ],
   "homepage": "https://flipzi.io/api/guides/mcp-server/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flipzitcg/flipzi-mcp.git"
+  },
+  "bugs": "https://github.com/flipzitcg/flipzi-mcp/issues",
   "scripts": {
     "gen:plans": "node scripts/gen-plans.mjs",
     "check:plans": "node scripts/gen-plans.mjs --check",

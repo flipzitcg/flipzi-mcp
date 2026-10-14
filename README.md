@@ -4,6 +4,8 @@ Ask Claude, Cursor or any MCP client about trading card prices: search cards, ge
 
 Runs on your machine over stdio (`npx`). Nothing is hosted, and the only network traffic is your requests to `data.flipzi.io`.
 
+Source: <https://github.com/flipzitcg/flipzi-mcp>. Public mirror; please report problems as GitHub issues rather than pull requests.
+
 ## 1. Get a key (free)
 
 1. Create an account: <https://flipzi.io/account/register?product=data&utm_source=npm&utm_medium=directory&utm_campaign=202610_mcp>
@@ -20,7 +22,7 @@ claude mcp add --env FLIPZI_API_KEY=fz_live_... --transport stdio flipzi -- npx 
 ```
 Check with `claude mcp list` or `/mcp`. Add `--scope user` to use it in every project.
 
-**Claude Desktop (one click)** — once the release publishes it, download `flipzi-mcp.mcpb` from the GitLab release and open it; Claude Desktop asks for your key in a masked field.
+**Claude Desktop (one click)** — once the release publishes it, download `flipzi-mcp.mcpb` from the [GitHub releases](https://github.com/flipzitcg/flipzi-mcp/releases) and open it; Claude Desktop asks for your key in a masked field.
 
 **Claude Desktop (config file)** — Settings → Developer → Edit Config (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS, `%APPDATA%\Claude\claude_desktop_config.json` on Windows), then fully quit and reopen the app:
 ```json

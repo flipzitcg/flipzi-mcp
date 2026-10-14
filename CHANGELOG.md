@@ -1,6 +1,7 @@
 # Changelog
 
-## Unreleased
+## 0.1.1
+- Repository moved to GitHub: <https://github.com/flipzitcg/flipzi-mcp>.
 - `flipzi_get_box_value`: sealed booster-box price vs the estimated value of the contents (Data API 1.12.0, Pro and above).
 
 ## 0.1.0

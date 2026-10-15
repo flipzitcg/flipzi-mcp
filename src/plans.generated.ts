@@ -55,7 +55,7 @@ export const OPS: Record<string, PlanReq> = {
   "getCardUpdates": {
     "min_plan": "pro",
     "feature": "updates",
-    "units": "1 per 25 rows (minimum 1)"
+    "units": "1 per 25 rows (minimum 1); doubled with `include=previous`"
   },
   "getHealth": {
     "min_plan": "none",

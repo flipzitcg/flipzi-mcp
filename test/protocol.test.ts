@@ -9,7 +9,7 @@ test('real stdio server lists every tool as read-only and explains a missing key
   const client = new Client({ name: 'test', version: '0' });
   await client.connect(new StdioClientTransport({ command: process.execPath, args: ['dist/src/index.js'], env }));
   const { tools } = await client.listTools();
-  assert.equal(tools.length, 11);
+  assert.equal(tools.length, 12);
   assert.ok(tools.every((t) => t.annotations?.readOnlyHint === true));
   assert.ok(tools.every((t) => t.name.startsWith('flipzi_')));
   const r: any = await client.callTool({ name: 'flipzi_search_cards', arguments: { q: 'umbreon' } });

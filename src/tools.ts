@@ -132,7 +132,7 @@ export function buildTools(client: FlipziClient): ToolDef[] {
               tool('flipzi_search_cards', 'searchCards'), tool('flipzi_get_card', 'getCard'), tool('flipzi_get_price', 'getCardPrice'),
               tool('flipzi_list_games', 'listGames'), tool('flipzi_list_sets', 'listSets'), tool('flipzi_list_set_cards', 'listSetCards'),
               tool('flipzi_get_history', 'getCardHistory'), tool('flipzi_get_sold_comps', 'getCardSold'), tool('flipzi_get_movers', 'getMarketMovers'),
-              tool('flipzi_get_box_value', 'getSealedComparisons'),
+              tool('flipzi_get_box_value', 'getSealedComparisons'), tool('flipzi_get_cardmarket_conditions', 'getCardCardmarketConditions'),
             ],
             ...(ranked && rank(u.plan) < rank('ultra') ? { upgrade: tag('https://flipzi.io/account/billing?product=data', 'flipzi_account'), pricing: pricingUrl('flipzi_account') } : {}),
           }),
@@ -169,6 +169,10 @@ export function buildTools(client: FlipziClient): ToolDef[] {
     withCard('flipzi_get_sold_comps', 'getCardSold', 'Sold comparisons', 'What buyers actually paid on eBay (blended sold comps) for a card.', {
       currency, grade: z.string().optional(), language: z.string().optional(),
     }, (a) => ({ path: cardPath(a, '/sold'), query: { currency: a.currency, grade: a.grade, language: a.language } })),
+    withCard('flipzi_get_cardmarket_conditions', 'getCardCardmarketConditions', 'Cardmarket prices by condition',
+      'What Cardmarket sellers ask for a card per language, finish and Cardmarket grade (MT Mint, NM, EX Excellent, GD Good, LP Light Played, PL Played, PO Poor): the cheapest visible offer and the median of the visible offers, in EUR, with the date the page was read. `coverage` says whether there is data: covered, no_offers, stale (older than 60 days, no figure) or not_covered (Pokemon EN/JP and One Piece singles from EUR 2 are covered). Cardmarket grades are not eBay conditions; `us_grade` is only a rough hint. Asking prices, not sales: use flipzi_get_sold_comps for what sold.', {
+      language: z.enum(['en', 'ja']).optional().describe('Only this Cardmarket language. Default: every language the card has.'),
+    }, (a) => ({ path: cardPath(a, '/cardmarket'), query: { language: a.language } })),
     withCard('flipzi_get_history', 'getCardHistory', 'Price history', 'Daily price history and summary. Depth depends on plan (Basic 30 days, Pro and above all).', {
       period: z.enum(['7d', '30d', '90d', '6m', '1y', 'all']).optional().describe('Default 30d.'), currency, grade: z.string().optional(),
     }, (a) => ({ path: cardPath(a, '/history'), query: { period: a.period, currency: a.currency, grade: a.grade } })),

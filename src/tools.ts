@@ -172,7 +172,8 @@ export function buildTools(client: FlipziClient): ToolDef[] {
     withCard('flipzi_get_cardmarket_conditions', 'getCardCardmarketConditions', 'Cardmarket prices by condition',
       'What Cardmarket sellers ask for a card per language, finish and Cardmarket grade (MT Mint, NM, EX Excellent, GD Good, LP Light Played, PL Played, PO Poor): the cheapest visible offer and the median of the visible offers, in EUR, with the date the page was read. `coverage` says whether there is data: covered, no_offers, stale (older than 60 days, no figure) or not_covered (Pokemon EN/JP and One Piece singles from EUR 2 are covered). Cardmarket grades are not eBay conditions; `us_grade` is only a rough hint. Asking prices, not sales: use flipzi_get_sold_comps for what sold.', {
       language: z.enum(['en', 'ja']).optional().describe('Only this Cardmarket language. Default: every language the card has.'),
-    }, (a) => ({ path: cardPath(a, '/cardmarket'), query: { language: a.language } })),
+      seller_country: z.string().optional().describe('Only offers from sellers in these countries: ISO codes, comma-separated (e.g. "DE" or "DE,AT"), or "eu" for the 27 EU states. The answer then lists seller_country and per-language offers_matched. Default: sellers anywhere.'),
+    }, (a) => ({ path: cardPath(a, '/cardmarket'), query: { language: a.language, seller_country: a.seller_country } })),
     withCard('flipzi_get_history', 'getCardHistory', 'Price history', 'Daily price history and summary. Depth depends on plan (Basic 30 days, Pro and above all).', {
       period: z.enum(['7d', '30d', '90d', '6m', '1y', 'all']).optional().describe('Default 30d.'), currency, grade: z.string().optional(),
     }, (a) => ({ path: cardPath(a, '/history'), query: { period: a.period, currency: a.currency, grade: a.grade } })),

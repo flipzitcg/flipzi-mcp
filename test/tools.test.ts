@@ -41,6 +41,8 @@ test('every tool maps to the documented route and params', async () => {
     ['flipzi_get_price', { card_id: ID, currency: 'usd' }, `/v1/cards/${ID}/price?currency=usd`],
     ['flipzi_get_sold_comps', { card_id: ID }, `/v1/cards/${ID}/sold`],
     ['flipzi_get_history', { card_id: ID, period: '90d' }, `/v1/cards/${ID}/history?period=90d`],
+    ['flipzi_get_cardmarket_conditions', { card_id: ID }, `/v1/cards/${ID}/cardmarket`],
+    ['flipzi_get_cardmarket_conditions', { card_id: ID, language: 'en', seller_country: 'DE,AT' }, `/v1/cards/${ID}/cardmarket?language=en&seller_country=DE%2CAT`],
     ['flipzi_get_movers', { game: 'pokemon', window: '24h' }, '/v1/market/movers?game=pokemon&window=24h&limit=10'],
     ['flipzi_get_box_value', {}, '/v1/sealed/comparisons?game=pokemon'],
     ['flipzi_get_box_value', { set: 'paldea-evolved', history_days: 30 }, '/v1/sealed/comparisons/paldea-evolved?history_days=30'],

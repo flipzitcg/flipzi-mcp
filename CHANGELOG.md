@@ -2,7 +2,8 @@
 
 ## Unreleased
 - `flipzi_get_cardmarket_conditions`: Cardmarket asking prices by language, finish and Cardmarket grade (Data API 1.16.0, Ultra and above).
-- Plan requirements regenerated from Data API `openapi.yaml` 1.16.0.
+- `flipzi_get_cardmarket_conditions`: languages `de`, `es`, `it` and `daily_lowest_near_mint` (Data API 1.23.0); `flipzi_get_sold_comps` describes the pooled DE/ES/IT prices.
+- Plan requirements regenerated from Data API `openapi.yaml` 1.23.0.
 
 ## 0.1.1
 - Repository moved to GitHub: <https://github.com/flipzitcg/flipzi-mcp>.

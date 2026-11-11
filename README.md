@@ -55,7 +55,7 @@ Then ask: *"What's an Umbreon VMAX worth right now?"* or call `flipzi_account` t
 | `flipzi_get_history` | Basic | 1 | Daily history (30 days on Basic, longer on Pro+) |
 | `flipzi_get_sold_comps` | Pro | 1 | What buyers actually paid on eBay |
 | `flipzi_get_movers` | Ultra | 5 | Biggest gainers/losers for a game |
-| `flipzi_search_sealed` | Free | 1 | Search 7,600+ sealed products (booster boxes, Elite Trainer Boxes, tins, blisters, decks, ...) for Pokémon, Japanese Pokémon, One Piece, Lorcana and Riftbound, with daily Cardmarket and TCGplayer prices |
+| `flipzi_search_sealed` | Pro | 1 | Search 7,600+ sealed products (booster boxes, Elite Trainer Boxes, tins, blisters, decks, ...) for Pokémon, Japanese Pokémon, One Piece, Lorcana and Riftbound, with daily Cardmarket and TCGplayer prices |
 | `flipzi_get_sealed_cardmarket` | Ultra | 1 | Cardmarket asking prices for a sealed product per language and edition: cheapest and median offer, offers and copies |
 | `flipzi_get_box_value` | Pro | 1 | Sealed booster-box price vs the **estimated** value of the cards inside (English Pokémon boxes that pass checks; a range, not a promise) |
 | `flipzi_get_cardmarket_conditions` | Ultra | 1 | Cardmarket asking prices per language, finish and Cardmarket grade (Mint to Poor): cheapest and median, with the date read |

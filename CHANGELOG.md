@@ -1,7 +1,10 @@
 # Changelog
 
+## 0.2.1
+- `flipzi_search_sealed` is on Pro and above, as the Data API now gates `/v1/sealed` (`sealed_catalog`). 0.2.0 described it as free; on a lower plan it answers with the upgrade link and costs 0 units.
+
 ## 0.2.0
-- **Sealed products.** `flipzi_search_sealed` (every plan, 1 unit): search more than 7,600 sealed products, booster boxes, Elite Trainer Boxes, booster bundles, tins, blisters, decks, collections, cases and accessories, for Pokémon, Japanese Pokémon, One Piece, Lorcana and Riftbound, by name, game, type and set, with each product's daily Cardmarket and TCGplayer price (Data API 1.24.0).
+- **Sealed products.** `flipzi_search_sealed` (1 unit): search more than 7,600 sealed products, booster boxes, Elite Trainer Boxes, booster bundles, tins, blisters, decks, collections, cases and accessories, for Pokémon, Japanese Pokémon, One Piece, Lorcana and Riftbound, by name, game, type and set, with each product's daily Cardmarket and TCGplayer price (Data API 1.24.0).
 - `flipzi_get_sealed_cardmarket` (Ultra and above): Cardmarket asking prices for a sealed product per language and edition.
 - `flipzi_get_cardmarket_conditions`: Cardmarket asking prices by language, finish and Cardmarket grade (Data API 1.16.0, Ultra and above).
 - `flipzi_get_cardmarket_conditions`: languages `de`, `es`, `it` and `daily_lowest_near_mint` (Data API 1.23.0); `flipzi_get_sold_comps` describes the pooled DE/ES/IT prices.

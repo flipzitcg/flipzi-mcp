@@ -173,7 +173,7 @@ test('flipzi_account marks what the plan unlocks and offers upgrade only when on
   const a = JSON.parse((await sandbox.tools.flipzi_account.run({})).text);
   const by = Object.fromEntries(a.tools.map((t: any) => [t.tool, t]));
   assert.equal(by.flipzi_get_price.available, true); assert.equal(by.flipzi_get_sold_comps.available, false);
-  assert.equal(by.flipzi_get_sold_comps.needs, 'pro'); assert.equal(by.flipzi_get_box_value.needs, 'pro'); assert.equal(by.flipzi_get_box_value.available, false); assert.equal(by.flipzi_get_movers.needs, 'ultra'); assert.ok(a.upgrade);
+  assert.equal(by.flipzi_get_sold_comps.needs, 'pro'); assert.equal(by.flipzi_search_sealed.needs, 'pro'); assert.equal(by.flipzi_get_box_value.needs, 'pro'); assert.equal(by.flipzi_get_box_value.available, false); assert.equal(by.flipzi_get_movers.needs, 'ultra'); assert.ok(a.upgrade);
   const mega = rig([{ body: { plan: 'mega', used: 3, limit: 1000000, remaining: 999997 } }]);
   const m = JSON.parse((await mega.tools.flipzi_account.run({})).text);
   assert.ok(m.tools.every((t: any) => t.available)); assert.equal(m.upgrade, undefined);

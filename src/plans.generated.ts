@@ -103,8 +103,8 @@ export const OPS: Record<string, PlanReq> = {
     "units": 1
   },
   "getSealedProduct": {
-    "min_plan": "sandbox",
-    "feature": "catalog",
+    "min_plan": "pro",
+    "feature": "sealed_catalog",
     "units": 1
   },
   "getSetAnalytics": {
@@ -143,8 +143,8 @@ export const OPS: Record<string, PlanReq> = {
     "units": 1
   },
   "searchSealed": {
-    "min_plan": "sandbox",
-    "feature": "catalog",
+    "min_plan": "pro",
+    "feature": "sealed_catalog",
     "units": 1
   }
 };

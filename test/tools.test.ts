@@ -44,6 +44,9 @@ test('every tool maps to the documented route and params', async () => {
     ['flipzi_get_cardmarket_conditions', { card_id: ID }, `/v1/cards/${ID}/cardmarket`],
     ['flipzi_get_cardmarket_conditions', { card_id: ID, language: 'en', seller_country: 'DE,AT' }, `/v1/cards/${ID}/cardmarket?language=en&seller_country=DE%2CAT`],
     ['flipzi_get_movers', { game: 'pokemon', window: '24h' }, '/v1/market/movers?game=pokemon&window=24h&limit=10'],
+    ['flipzi_search_sealed', { q: 'destined rivals', type: 'elite_trainer_box', priced: true }, '/v1/sealed?q=destined+rivals&type=elite_trainer_box&priced=true&page_size=20'],
+    ['flipzi_search_sealed', { game: 'pokemon-jp' }, '/v1/sealed?game=pokemon-jp&page_size=20'],
+    ['flipzi_get_sealed_cardmarket', { sealed_id: ID, seller_country: 'eu' }, `/v1/sealed/${ID}/cardmarket?seller_country=eu`],
     ['flipzi_get_box_value', {}, '/v1/sealed/comparisons?game=pokemon'],
     ['flipzi_get_box_value', { set: 'paldea-evolved', history_days: 30 }, '/v1/sealed/comparisons/paldea-evolved?history_days=30'],
     ['flipzi_account', {}, '/v1/meta/usage'],
@@ -54,6 +57,18 @@ test('every tool maps to the documented route and params', async () => {
     assert.equal(out.isError ?? false, false, name);
     assert.equal(calls[0].url, 'https://data.flipzi.io' + path, name);
   }
+});
+
+test('sealed search keeps the fields an agent needs and drops the rest', async () => {
+  const row = { id: ID, name: 'Destined Rivals Elite Trainer Box', game: 'pokemon', type: 'elite_trainer_box', set_id: 'destined-rivals',
+    set_name: 'Destined Rivals', image_url: 'https://images.flipzi.io/x.webp', cardmarket_product_id: 818585, tcgplayer_product_id: 624676,
+    prices: [{ market: 'cardmarket', price_cents: 9871, price_formatted: '€98.71', currency: 'EUR', updated_at: '2026-11-11T05:35:07Z' }],
+    cardmarket_offers: true };
+  const { tools } = rig([{ body: { data: [row], total: 1, page: 1, page_size: 20 } }]);
+  const out = JSON.parse((await tools.flipzi_search_sealed.run({ q: 'destined' })).text.split('\n')[0]);
+  assert.deepEqual(out.data[0], { id: ID, name: row.name, game: 'pokemon', type: 'elite_trainer_box', set_id: 'destined-rivals',
+    prices: [{ market: 'cardmarket', price: '€98.71', updated_at: '2026-11-11T05:35:07Z' }], cardmarket_offers: true });
+  assert.equal(out.total, 1);
 });
 
 test('sends key and the disclosed client tag; tag can be switched off', async () => {

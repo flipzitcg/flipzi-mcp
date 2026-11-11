@@ -1,6 +1,6 @@
 # Flipzi MCP server
 
-Ask Claude, Cursor or any MCP client about trading card prices: search cards, get current prices, sold comps, price history, market movers, games and sets. It is a thin local wrapper over the [Flipzi Data API](https://flipzi.io/api/?utm_source=npm&utm_medium=directory&utm_campaign=202610_mcp). **You bring your own Flipzi API key; the free plan needs no card.**
+Ask Claude, Cursor or any MCP client about trading card prices: search cards and sealed products (booster boxes, Elite Trainer Boxes, tins), get current prices, sold comps, price history, market movers, games and sets. It is a thin local wrapper over the [Flipzi Data API](https://flipzi.io/api/?utm_source=npm&utm_medium=directory&utm_campaign=202610_mcp). **You bring your own Flipzi API key; the free plan needs no card.**
 
 Runs on your machine over stdio (`npx`). Nothing is hosted, and the only network traffic is your requests to `data.flipzi.io`.
 
@@ -55,6 +55,8 @@ Then ask: *"What's an Umbreon VMAX worth right now?"* or call `flipzi_account` t
 | `flipzi_get_history` | Basic | 1 | Daily history (30 days on Basic, longer on Pro+) |
 | `flipzi_get_sold_comps` | Pro | 1 | What buyers actually paid on eBay |
 | `flipzi_get_movers` | Ultra | 5 | Biggest gainers/losers for a game |
+| `flipzi_search_sealed` | Free | 1 | Search 7,600+ sealed products (booster boxes, Elite Trainer Boxes, tins, blisters, decks, ...) for Pokémon, Japanese Pokémon, One Piece, Lorcana and Riftbound, with daily Cardmarket and TCGplayer prices |
+| `flipzi_get_sealed_cardmarket` | Ultra | 1 | Cardmarket asking prices for a sealed product per language and edition: cheapest and median offer, offers and copies |
 | `flipzi_get_box_value` | Pro | 1 | Sealed booster-box price vs the **estimated** value of the cards inside (English Pokémon boxes that pass checks; a range, not a promise) |
 | `flipzi_get_cardmarket_conditions` | Ultra | 1 | Cardmarket asking prices per language, finish and Cardmarket grade (Mint to Poor): cheapest and median, with the date read |
 

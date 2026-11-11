@@ -72,6 +72,12 @@ export function fail(e: ApiError, tool: string): ToolOut {
   return { text: msg + (msg.includes('request_id') ? '' : rid), isError: true };
 }
 
+const SEALED_TYPES = ['booster_box', 'elite_trainer_box', 'booster_bundle', 'booster_pack', 'blister', 'tin', 'deck', 'collection', 'case', 'accessory', 'other'] as const;
+const slimSealed = (p: any) => ({
+  id: p.id, name: p.name, game: p.game, type: p.type, set_id: p.set_id,
+  prices: Array.isArray(p.prices) ? p.prices.map((x: any) => ({ market: x.market, price: x.price_formatted, updated_at: x.updated_at })) : p.prices,
+  cardmarket_offers: p.cardmarket_offers,
+});
 const slim = (c: any) => ({ id: c.id, name: c.name, game: c.game, set: c.set, number: c.number, rarity: c.rarity, printing: c.printing_label ?? c.printing ?? undefined });
 
 export function buildTools(client: FlipziClient): ToolDef[] {
@@ -132,6 +138,7 @@ export function buildTools(client: FlipziClient): ToolDef[] {
               tool('flipzi_search_cards', 'searchCards'), tool('flipzi_get_card', 'getCard'), tool('flipzi_get_price', 'getCardPrice'),
               tool('flipzi_list_games', 'listGames'), tool('flipzi_list_sets', 'listSets'), tool('flipzi_list_set_cards', 'listSetCards'),
               tool('flipzi_get_history', 'getCardHistory'), tool('flipzi_get_sold_comps', 'getCardSold'), tool('flipzi_get_movers', 'getMarketMovers'),
+              tool('flipzi_search_sealed', 'searchSealed'), tool('flipzi_get_sealed_cardmarket', 'getSealedCardmarket'),
               tool('flipzi_get_box_value', 'getSealedComparisons'), tool('flipzi_get_cardmarket_conditions', 'getCardCardmarketConditions'),
             ],
             ...(ranked && rank(u.plan) < rank('ultra') ? { upgrade: tag('https://flipzi.io/account/billing?product=data', 'flipzi_account'), pricing: pricingUrl('flipzi_account') } : {}),
@@ -182,6 +189,24 @@ export function buildTools(client: FlipziClient): ToolDef[] {
       direction: z.enum(['gainers', 'losers', 'both']).optional(), limit: z.number().int().min(1).max(100).optional().describe('Per direction. Default 10.'),
       set_id: z.string().optional(), currency,
     }, (a) => ({ path: '/v1/market/movers', query: { game: a.game, window: a.window, direction: a.direction, limit: a.limit ?? 10, set_id: a.set_id, currency: a.currency } })),
+    T('flipzi_search_sealed', 'searchSealed', 'Search sealed products',
+      'Searches 7,600+ sealed products (booster boxes, Elite Trainer Boxes, booster bundles, tins, blisters, decks, collections, cases, accessories) for Pokemon, Japanese Pokemon, One Piece, Lorcana and Riftbound. Each row has its `type`, its daily prices (`cardmarket` = lowest listed price on Cardmarket, `tcgplayer` = TCGplayer market price; a price older than 7 days is left out) and `cardmarket_offers` (true when flipzi_get_sealed_cardmarket has offer figures). Asking prices, not sales: sealed products have no eBay sold prices here.', {
+      q: z.string().optional().describe('Words in the product name, each prefix-matched, e.g. "destined rivals".'),
+      game: z.string().optional().describe('Game id, e.g. "pokemon", "pokemon-jp", "onepiece", "lorcana", "riftbound".'),
+      type: z.enum(SEALED_TYPES).optional().describe('Product type, e.g. elite_trainer_box or booster_box.'),
+      set_id: z.string().optional().describe('Sealed set slug, e.g. "destined-rivals".'),
+      priced: z.boolean().optional().describe('true: only products with a current price.'),
+      currency, page: z.number().int().min(1).optional(), page_size: z.number().int().min(1).max(50).optional().describe('Default 20.'),
+    }, (a) => ({
+      path: '/v1/sealed',
+      query: { q: a.q, game: a.game, type: a.type, set_id: a.set_id, priced: a.priced === undefined ? undefined : String(a.priced), currency: a.currency, page: a.page, page_size: a.page_size ?? 20 },
+      map: (d: any) => (Array.isArray(d?.data) ? { ...d, data: d.data.map(slimSealed) } : d),
+    })),
+    T('flipzi_get_sealed_cardmarket', 'getSealedCardmarket', 'Cardmarket offers for a sealed product',
+      'What Cardmarket sellers ask for a sealed product, per language and edition (standard, first_edition): the cheapest and median visible offer, offers and copies, in EUR. `coverage` is covered, no_offers, stale or not_covered (English Pokemon sealed from EUR 10 is covered; flipzi_search_sealed marks those rows cardmarket_offers: true).', {
+      sealed_id: z.string().describe('Sealed product id (UUID) from flipzi_search_sealed.'),
+      seller_country: z.string().optional().describe('Only offers from sellers in these countries: ISO codes, comma-separated, or "eu". Default: anywhere.'),
+    }, (a) => ({ path: `/v1/sealed/${encodeURIComponent(a.sealed_id)}/cardmarket`, query: { seller_country: a.seller_country } })),
     T('flipzi_get_box_value', 'getSealedComparisons', 'Booster box value', 'Sealed booster-box price vs the ESTIMATED value of the cards inside (English Pokemon boxes that pass Flipzi checks). Values are a low/base/high range at CardMarket EUR prices; pull rates are estimates, so this is not a promise about any one box. Omit `set` to list every published box; pass a box `set` slug (from the list) for its top cards and history.', {
       set: z.string().optional().describe('Box slug from the list, e.g. "paldea-evolved". Omit to list all published boxes.'),
       history_days: z.number().int().min(1).max(365).optional().describe('With `set`: days of history. Default 90.'),

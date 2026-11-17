@@ -17,10 +17,12 @@ await build({
 const tools = [
   ['flipzi_account', 'Your plan, allowance used and which tools your plan unlocks'],
   ['flipzi_list_games', 'Supported games'], ['flipzi_list_sets', 'Sets of a game'], ['flipzi_list_set_cards', 'Cards in a set'],
-  ['flipzi_search_cards', 'Search cards by name'], ['flipzi_get_card', 'Card details'], ['flipzi_get_price', 'Current price'],
+  ['flipzi_search_cards', 'Search cards by name, set code or number'], ['flipzi_get_card', 'Card details'], ['flipzi_get_price', 'Current price'],
   ['flipzi_get_history', 'Price history (Basic+)'], ['flipzi_get_sold_comps', 'Sold comparisons (Pro+)'], ['flipzi_get_movers', 'Market movers (Ultra)'],
   ['flipzi_search_sealed', 'Search sealed products with prices'], ['flipzi_get_sealed_cardmarket', 'Cardmarket offers for a sealed product (Ultra)'],
   ['flipzi_get_box_value', 'Booster box value (Pro+)'], ['flipzi_get_cardmarket_conditions', 'Cardmarket prices by condition (Ultra)'],
+  ['flipzi_lookup_card', 'Card id from a pokemontcg.io, Cardmarket or TCGplayer id'], ['flipzi_get_prices_bulk', 'Current prices for many cards (Basic+)'],
+  ['flipzi_get_marketplace_comps', 'Sold comps per eBay site (Ultra)'], ['flipzi_get_sales', 'Individual eBay sales (Ultra)'],
 ].map(([name, description]) => ({ name, description }));
 const manifest = {
   manifest_version: '0.3', name: 'flipzi', display_name: 'Flipzi Card Prices', version: pkg.version,

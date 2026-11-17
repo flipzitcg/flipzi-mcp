@@ -49,11 +49,15 @@ Then ask: *"What's an Umbreon VMAX worth right now?"* or call `flipzi_account` t
 | `flipzi_list_games` | Free | 1 | Supported games |
 | `flipzi_list_sets` | Free | 1 | Sets of a game |
 | `flipzi_list_set_cards` | Free | 1 | Cards in a set (gets card ids) |
-| `flipzi_search_cards` | Free | 1 | Search by name |
+| `flipzi_search_cards` | Free | 1 | Search by name, or by the set code and number printed on the card |
+| `flipzi_lookup_card` | Free | 1 | Flipzi card id from a pokemontcg.io id, Cardmarket idProduct or TCGplayer product id |
 | `flipzi_get_card` | Free | 1 | Card details |
 | `flipzi_get_price` | Free | 1 | Current price, market and confidence (graded needs Pro) |
+| `flipzi_get_prices_bulk` | Basic | 1 per id | Current prices for many cards in one call (25 ids on Basic, 100 Pro, 500 Ultra, 750 Mega) |
 | `flipzi_get_history` | Basic | 1 | Daily history (30 days on Basic, longer on Pro+) |
-| `flipzi_get_sold_comps` | Pro | 1 | What buyers actually paid on eBay |
+| `flipzi_get_sold_comps` | Pro | 1 | What buyers actually paid on eBay, optionally by seller-stated condition (`nm` to `dmg`), finish and listing language |
+| `flipzi_get_marketplace_comps` | Ultra | 1 | Sold comps per eBay site (UK, US, AU, CA, DE, FR, IT, ES) in the site's own currency |
+| `flipzi_get_sales` | Ultra | 1 | The individual eBay sales behind the comps: date, site, price as paid, grade, condition, title |
 | `flipzi_get_movers` | Ultra | 5 | Biggest gainers/losers for a game |
 | `flipzi_search_sealed` | Pro | 1 | Search 7,600+ sealed products (booster boxes, Elite Trainer Boxes, tins, blisters, decks, ...) for Pokémon, Japanese Pokémon, One Piece, Lorcana and Riftbound, with daily Cardmarket and TCGplayer prices |
 | `flipzi_get_sealed_cardmarket` | Ultra | 1 | Cardmarket asking prices for a sealed product per language and edition: cheapest and median offer, offers and copies |
@@ -64,9 +68,9 @@ Requirements are read from the API's own contract (`openapi.yaml`, version in `s
 
 ## Allowance and limits
 
-- One unit per call (movers 5). The API counts per account per UTC month; `flipzi_account` shows what is left.
+- One unit per call (movers 5; bulk prices 1 per distinct id). The API counts per account per UTC month; `flipzi_account` shows what is left.
 - The free plan allows **5 requests per minute**. A short wait (≤10 s) is retried once automatically; longer waits are reported.
-- **Session budget:** this server stops itself after `FLIPZI_MCP_MAX_UNITS` units per run (default 150) so an agent loop cannot burn your month. Set `0` for unlimited. Restart the server to reset it.
+- **Session budget:** this server stops itself after `FLIPZI_MCP_MAX_UNITS` units per run (default 150) so an agent loop cannot burn your month. A bulk call is counted by its ids before it is sent, so one bigger than what is left of the budget is refused locally. Set `0` for unlimited. Restart the server to reset it.
 - Output is capped at about 20 KB per call; search returns 10 cards by default.
 
 ## Settings (environment variables)

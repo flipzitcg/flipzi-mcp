@@ -1,6 +1,6 @@
 import { Budget } from './budget.js';
 
-export const VERSION = '0.2.1';
+export const VERSION = '0.3.0';
 
 export interface ApiError {
   status: number;
@@ -39,6 +39,15 @@ export class FlipziClient {
 
   /** cost = units this call is expected to bill; refusals bill 0 and are not counted. */
   async get(path: string, query: Record<string, string | number | undefined>, cost: number): Promise<Result> {
+    return this.send('GET', path, query, undefined, cost);
+  }
+
+  /** JSON POST (the bulk routes). Same budget, retry and error handling as get(). */
+  async post(path: string, body: unknown, cost: number): Promise<Result> {
+    return this.send('POST', path, {}, body, cost);
+  }
+
+  private async send(method: 'GET' | 'POST', path: string, query: Record<string, string | number | undefined>, body: unknown, cost: number): Promise<Result> {
     if (!this.o.budget.allows(cost)) {
       return {
         ok: false,
@@ -54,7 +63,7 @@ export class FlipziClient {
     for (const [k, v] of Object.entries(query)) if (v !== undefined && v !== '') qs.set(k, String(v));
     const url = this.base + path + (qs.toString() ? '?' + qs : '');
     for (let attempt = 0; ; attempt++) {
-      const r = await this.once(url);
+      const r = await this.once(method, url, body);
       if (!r.ok && r.error.code === 'RATE_LIMITED' && attempt === 0 && (r.error.retryAfter ?? 99) <= MAX_AUTO_WAIT_S) {
         await this.sleep(Math.max(1, r.error.retryAfter ?? 1) * 1000);
         continue;
@@ -64,16 +73,20 @@ export class FlipziClient {
     }
   }
 
-  private async once(url: string): Promise<Result> {
+  private async once(method: 'GET' | 'POST', url: string, payload: unknown): Promise<Result> {
     const headers: Record<string, string> = {
       'X-API-Key': this.o.apiKey ?? '',
       Accept: 'application/json',
       'User-Agent': `flipzi-mcp/${VERSION}`,
     };
     if (this.o.tagClient !== false) headers['X-Flipzi-Client'] = `mcp/${VERSION}`;
+    if (payload !== undefined) headers['Content-Type'] = 'application/json';
     let res: Response;
     try {
-      res = await this.f(url, { headers, signal: AbortSignal.timeout(this.o.timeoutMs ?? 20000) });
+      res = await this.f(url, {
+        method, headers, signal: AbortSignal.timeout(this.o.timeoutMs ?? 20000),
+        ...(payload !== undefined ? { body: JSON.stringify(payload) } : {}),
+      });
     } catch (e: any) {
       return { ok: false, error: { status: 0, code: 'NETWORK_ERROR', message: `Could not reach the Flipzi API: ${e?.name === 'TimeoutError' ? 'timed out' : e?.message ?? e}`, details: {} } };
     }

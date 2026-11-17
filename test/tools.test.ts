@@ -9,13 +9,13 @@ import { tag } from '../src/links.js';
 const ID = '01a10d77-b8c4-7ddf-afdd-5f80f642f266';
 const KEY = 'fz_live_SECRETSECRETSECRETSECRET';
 
-type Call = { url: string; headers: Record<string, string> };
+type Call = { url: string; headers: Record<string, string>; method?: string; body?: string };
 function rig(responses: Array<{ status?: number; body?: any; headers?: Record<string, string> }>, o: { key?: string | undefined; max?: number; tagClient?: boolean } = {}) {
   const calls: Call[] = [];
   const sleeps: number[] = [];
   let i = 0;
   const fetchImpl = (async (url: any, init: any) => {
-    calls.push({ url: String(url), headers: init.headers });
+    calls.push({ url: String(url), headers: init.headers, method: init.method, body: init.body });
     const r = responses[Math.min(i++, responses.length - 1)];
     return new Response(JSON.stringify(r.body ?? { data: {} }), { status: r.status ?? 200, headers: { 'content-type': 'application/json', ...(r.headers ?? {}) } });
   }) as typeof fetch;
@@ -40,6 +40,14 @@ test('every tool maps to the documented route and params', async () => {
     ['flipzi_get_card', { card_id: ID }, `/v1/cards/${ID}`],
     ['flipzi_get_price', { card_id: ID, currency: 'usd' }, `/v1/cards/${ID}/price?currency=usd`],
     ['flipzi_get_sold_comps', { card_id: ID }, `/v1/cards/${ID}/sold`],
+    ['flipzi_get_sold_comps', { card_id: ID, language: 'de', finish: 'reverse_holo', condition: 'nm' }, `/v1/cards/${ID}/sold?language=DE&finish=reverse_holo&condition=nm`],
+    ['flipzi_get_marketplace_comps', { card_id: ID, marketplace: 'ebay_de', grade: 'PSA_10' }, `/v1/cards/${ID}/marketplaces?grade=PSA_10&marketplace=ebay_de`],
+    ['flipzi_get_sales', { card_id: ID, marketplace: 'ebay_uk', period: '30d', condition: 'lp' }, `/v1/cards/${ID}/sales?marketplace=ebay_uk&period=30d&condition=lp&page_size=20`],
+    ['flipzi_search_cards', { game: 'pokemon', set_code: 'OBF', number: '125' }, '/v1/cards/search?game=pokemon&set_code=OBF&number=125&page_size=10'],
+    ['flipzi_search_cards', { game: 'pokemon-jp', number: '001' }, '/v1/cards/search?game=pokemon-jp&number=001&page_size=10'],
+    ['flipzi_lookup_card', { pokemontcg_id: 'sv3-125' }, '/v1/cards/lookup?pokemontcg_id=sv3-125'],
+    ['flipzi_lookup_card', { tcgplayer_id: '254761' }, '/v1/cards/lookup?tcgplayer_id=254761'],
+    ['flipzi_lookup_card', { cardmarket_id: 273752 }, '/v1/cards/lookup?cardmarket_id=273752'],
     ['flipzi_get_history', { card_id: ID, period: '90d' }, `/v1/cards/${ID}/history?period=90d`],
     ['flipzi_get_cardmarket_conditions', { card_id: ID }, `/v1/cards/${ID}/cardmarket`],
     ['flipzi_get_cardmarket_conditions', { card_id: ID, language: 'en', seller_country: 'DE,AT' }, `/v1/cards/${ID}/cardmarket?language=en&seller_country=DE%2CAT`],
@@ -147,6 +155,52 @@ test('session budget stops runaway loops locally; refusals are not charged', asy
   assert.equal(r2.client.budget.used, 0);
 });
 
+test('search needs q, set_code or number, and set_code needs game; no request otherwise', async () => {
+  const { tools, calls } = rig([{}]);
+  const none = await tools.flipzi_search_cards.run({ game: 'pokemon', set_id: 'sv03' });
+  assert.equal(none.isError, true); assert.match(none.text, /flipzi_list_set_cards/);
+  const noGame = await tools.flipzi_search_cards.run({ set_code: 'OBF', number: '125' });
+  assert.equal(noGame.isError, true); assert.match(noGame.text, /set_code needs game/);
+  assert.equal(calls.length, 0);
+});
+
+test('lookup takes exactly one id', async () => {
+  const { tools, calls } = rig([{}]);
+  assert.equal((await tools.flipzi_lookup_card.run({})).isError, true);
+  assert.equal((await tools.flipzi_lookup_card.run({ pokemontcg_id: 'sv3-125', tcgplayer_id: '1' })).isError, true);
+  assert.equal(calls.length, 0);
+});
+
+test('bulk posts distinct ids as JSON and charges one unit per id', async () => {
+  const { tools, calls, client } = rig([{ body: { data: [], not_found: [] } }]);
+  const out = await tools.flipzi_get_prices_bulk.run({ card_ids: [ID, ID.toUpperCase(), ' sv3-125 ', 'sv3-125'], currency: 'usd' });
+  assert.equal(out.isError ?? false, false);
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].url, 'https://data.flipzi.io/v1/cards/bulk');
+  assert.equal((calls[0] as any).method, 'POST');
+  assert.equal(calls[0].headers['Content-Type'], 'application/json');
+  assert.deepEqual(JSON.parse((calls[0] as any).body), { card_ids: [ID, 'sv3-125'], currency: 'usd' });
+  assert.equal(client.budget.used, 2);
+  assert.match(out.text, /"mcp_session_units_used":"2\/150"/);
+});
+
+test('bulk larger than the session budget left is refused locally', async () => {
+  const { tools, calls, client } = rig([{ body: { data: [] } }], { max: 10 });
+  await tools.flipzi_get_card.run({ card_id: ID }); // 1 unit
+  const ids = Array.from({ length: 10 }, (_, i) => `sv3-${i + 1}`);
+  const out = await tools.flipzi_get_prices_bulk.run({ card_ids: ids });
+  assert.equal(out.isError, true); assert.match(out.text, /FLIPZI_MCP_MAX_UNITS/);
+  assert.equal(calls.length, 1); assert.equal(client.budget.used, 1);
+  const ok = await tools.flipzi_get_prices_bulk.run({ card_ids: ids.slice(0, 9) });
+  assert.equal(ok.isError ?? false, false); assert.equal(client.budget.used, 10);
+});
+
+test('bulk plan lock costs nothing', async () => {
+  const { tools, client } = rig([{ status: 403, body: lockedBody() }]);
+  const out = await tools.flipzi_get_prices_bulk.run({ card_ids: [ID] });
+  assert.equal(out.isError, true); assert.match(out.text, /0 units/); assert.equal(client.budget.used, 0);
+});
+
 test('malformed card id never reaches the API', async () => {
   const { tools, calls } = rig([{}]);
   const out = await tools.flipzi_get_price.run({ card_id: 'charizard' });
@@ -164,7 +218,7 @@ test('the key never appears in any output', async () => {
   const bodies = [{ status: 401, body: { error: { code: 'API_KEY_INVALID', message: 'bad', details: {} } } }, { status: 500, body: { error: { code: 'INTERNAL_ERROR', message: 'boom', details: {} } } }, {}];
   for (const b of bodies) {
     const { tools } = rig([b]);
-    for (const t of Object.values(tools)) { const o = await t.run({ card_id: ID, q: 'a', game: 'g', set_id: 's' }); assert.ok(!o.text.includes('SECRET')); }
+    for (const t of Object.values(tools)) { const o = await t.run({ card_id: ID, q: 'a', game: 'g', set_id: 's', card_ids: [ID], pokemontcg_id: 'sv3-1' }); assert.ok(!o.text.includes('SECRET')); }
   }
 });
 
@@ -174,6 +228,8 @@ test('flipzi_account marks what the plan unlocks and offers upgrade only when on
   const by = Object.fromEntries(a.tools.map((t: any) => [t.tool, t]));
   assert.equal(by.flipzi_get_price.available, true); assert.equal(by.flipzi_get_sold_comps.available, false);
   assert.equal(by.flipzi_get_sold_comps.needs, 'pro'); assert.equal(by.flipzi_search_sealed.needs, 'pro'); assert.equal(by.flipzi_get_box_value.needs, 'pro'); assert.equal(by.flipzi_get_box_value.available, false); assert.equal(by.flipzi_get_movers.needs, 'ultra'); assert.ok(a.upgrade);
+  assert.equal(by.flipzi_lookup_card.available, true); assert.equal(by.flipzi_get_prices_bulk.needs, 'basic');
+  assert.equal(by.flipzi_get_marketplace_comps.needs, 'ultra'); assert.equal(by.flipzi_get_sales.needs, 'ultra');
   const mega = rig([{ body: { plan: 'mega', used: 3, limit: 1000000, remaining: 999997 } }]);
   const m = JSON.parse((await mega.tools.flipzi_account.run({})).text);
   assert.ok(m.tools.every((t: any) => t.available)); assert.equal(m.upgrade, undefined);

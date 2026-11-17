@@ -3,3 +3,5 @@ dist
 *.tgz
 .env
 dist-mcpb
+mcp-publisher
+awesome-mcp-servers/

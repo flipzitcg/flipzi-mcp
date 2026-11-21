@@ -7,7 +7,7 @@
 - **`flipzi_get_sales`** (Ultra, 1 unit): the individual eBay sales behind the comps (`/v1/cards/{id}/sales`), 20 per page by default.
 - **`flipzi_get_prices_bulk`** (Basic and above, 1 unit per distinct id): current prices for many cards in one call (`POST /v1/cards/bulk`). Duplicate ids are sent and charged once, and the per-run budget (`FLIPZI_MCP_MAX_UNITS`) counts every id before the request is sent.
 - **`flipzi_lookup_card`** (free, 1 unit): Flipzi card id from a pokemontcg.io id, a Cardmarket idProduct or a TCGplayer product id (`/v1/cards/lookup`).
-- Plan requirements regenerated from Data API `openapi.yaml` 1.25.0.
+- Plan requirements regenerated from Data API `openapi.yaml` 1.26.0.
 - The repository no longer carries the `mcp-publisher` binary.
 
 ## 0.2.1

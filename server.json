@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.flipzi/flipzi-mcp",
-  "description": "TCG card and sealed product prices, sold comps, history and movers. Bring your own key.",
+  "description": "TCG prices: Cardmarket asks by grade and language, eBay sold comps by marketplace. Bring your key.",
   "repository": { "url": "https://github.com/flipzitcg/flipzi-mcp", "source": "github" },
   "version": "0.3.0",
   "packages": [

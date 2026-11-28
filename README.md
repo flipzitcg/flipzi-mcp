@@ -6,6 +6,8 @@ Runs on your machine over stdio (`npx`). Nothing is hosted, and the only network
 
 Source: <https://github.com/flipzitcg/flipzi-mcp>. Public mirror; please report problems as GitHub issues rather than pull requests.
 
+Compare Cardmarket asking prices by condition and language or retrieve completed eBay sales for a specific marketplace. Each result depends on the card, available observations, and your Data API plan. [See four worked queries with dated responses](https://flipzi.io/api/guides/ai-agent-demos/).
+
 ## 1. Get a key (free)
 
 1. Create an account: <https://flipzi.io/account/register?product=data&utm_source=npm&utm_medium=directory&utm_campaign=202610_mcp>

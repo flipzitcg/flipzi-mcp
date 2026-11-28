@@ -1,7 +1,7 @@
 {
   "name": "@flipzitcg/mcp",
   "version": "0.3.0",
-  "description": "MCP server for the Flipzi Data API: TCG card search, prices, sold comps, history and movers for Claude, Cursor and other AI tools. Bring your own Flipzi API key; free tier available.",
+  "description": "Query the Flipzi Data API from Claude or Cursor for Cardmarket asking prices by condition and language, eBay completed sales by marketplace, and trading-card price history.",
   "type": "module",
   "license": "MIT",
   "bin": {
